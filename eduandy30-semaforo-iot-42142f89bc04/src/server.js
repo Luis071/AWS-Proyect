@@ -22,7 +22,7 @@ let timer = null;
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost/webfinal", {
+mongoose.connect("mongodb+srv://20197894:20197894@bdfase3.tsxjc.mongodb.net/Fase_Final?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useCreateIndex: true,
 });
