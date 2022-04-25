@@ -1,16 +1,17 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const requireDir = require("require-dir");
 const path = require("path");
 const http = require("http");
 const socketIO = require("socket.io");
 const awsService = require("../awsService");
+const config = require('config');
 
 const app = express();
-const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = socketIO(server);
+const dbConfig = config.get('Customer.dbConfig.dbName');
 
 requireDir("./models");
 
@@ -22,9 +23,14 @@ let timer = null;
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb+srv://20197894:20197894@bdfase3.tsxjc.mongodb.net/BDFase3?retryWrites=true&w=majority", {
+mongoose.connect(dbConfig, {
   useNewUrlParser: true,
-  useCreateIndex: true,
+  useUnifiedTopology: true,
+  //useCreateIndex: true,
+}).then(()=>{
+  console.log('Database Connected');
+}).catch(err=>{
+  console.log('Database no Connected'+err)
 });
 
 const public = path.join(__dirname, "../public");
@@ -68,10 +74,6 @@ app.get("/api/semaphores/stop", (req, res) => {
     status: true,
     message: "Semaphore change to red",
   });
-});
-
-server.listen(port, function () {
-  console.log(`Listening on port ${port}...`);
 });
 
 io.on("connection", (socket) => {
